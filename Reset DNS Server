@@ -1,0 +1,20 @@
+$userData = @"
+<powershell>
+
+    $DnsIp="x.x.x.x"
+    
+    $NICs =  Get-WMIObject Win32_NetworkAdapterConfiguration |? {$_.IPEnabled -eq 'TRUE'}
+    $NICs | %{ 
+        $_.SetDNSServerSearchOrder($DnsIp)
+        $_.SetDynamicDNSRegistration('TRUE')
+    }|out-null
+
+    Write-Host "Flushdns on AD-DNS"
+    ipconfig /flushdns
+    
+    Write-Host "Registerdns on AD-DNS"
+    ipconfig /registerdns
+
+</powershell>
+<persist>false</persist>
+"@
